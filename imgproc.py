@@ -71,6 +71,16 @@ def pos_black(mat):
 def convexhull(img):
     image, contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST,
                                                   cv2.CHAIN_APPROX_NONE)
+    l=[]
+    for i in range(len(contours)):
+        cnt = contours[i]
+        l.append(cv2.convexHull(cnt))
+    return l
+
+
+def triangle(img):
+    image, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_SIMPLE)
     cnt = contours[0]
     l = cv2.convexHull(cnt)
     return l

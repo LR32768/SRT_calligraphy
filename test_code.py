@@ -3,6 +3,7 @@ import cv2
 
 img = imgread('0.jpg')
 mat = matread(img)
-l = convexhull(img)
-cv2.drawContours(img, [l], -1, (0, 0, 0))
+l = convexhull(mat)
+print(len(l))
+cv2.drawContours(img, l, -1, (0, 0, 0))
 imgshow(img)
