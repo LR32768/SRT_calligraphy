@@ -6,7 +6,7 @@
         "type": "python",
         "request": "launch",
         "stopOnEntry": true,
-        "pythonPath": "D:/Python27/python.exe",
+        "pythonPath": "D:/python/python.exe",
         "program": "${file}",
         "debugOptions": [
             "WaitOnAbnormalExit",
