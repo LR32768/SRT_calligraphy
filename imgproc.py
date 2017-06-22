@@ -15,8 +15,8 @@ def imgread(addr):
                 else:
                     NewImage[i][j] = 255
         return NewImage
-    except:
-        print('There is an error in imgproc.imgread')
+    except Exception as e:
+        print('There is an error in imgproc.imgread' + str(e))
 
 
 def imgshow(img):
