@@ -27,4 +27,4 @@ imgread|file address|read pictrue(jpg), and transform it into a matrix(2d)
 imgshow|picture matrtix|show picture, press any key to quit
 matread|pictrue matrix|return a num matrix construct by 0 and 1, 0 mean white,1 mean black
 matwrite|number matrix|return a pictrue matrix
-/matget/file address/read pictrue, and return a num matrix directly
+matget|file address|read pictrue, and return a num matrix directly
