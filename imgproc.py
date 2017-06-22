@@ -66,3 +66,11 @@ def pos_black(mat):
             if mat[i][j] == 1:
                 result.append([i, j])
     return result
+
+
+def convexhull(img):
+    image, contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST,
+                                                  cv2.CHAIN_APPROX_NONE)
+    cnt = contours[0]
+    l = cv2.convexHull(cnt)
+    return l
