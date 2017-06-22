@@ -56,3 +56,13 @@ def matget(addr):
     img = imgread(addr)
     mat = matread(img)
     return mat
+
+
+def pos_black(mat):
+    size = mat.shape
+    result = []
+    for i in size[0]:
+        for j in size[1]:
+            if mat[i][j] == 1:
+                result.append([i, j])
+    return result
