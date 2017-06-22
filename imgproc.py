@@ -61,8 +61,8 @@ def matget(addr):
 def pos_black(mat):
     size = mat.shape
     result = []
-    for i in size[0]:
-        for j in size[1]:
+    for i in range(size[0]):
+        for j in range(size[1]):
             if mat[i][j] == 1:
                 result.append([i, j])
     return result
