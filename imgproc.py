@@ -22,7 +22,7 @@ def imgread(addr):
 def imgshow(img):
     cv2.namedWindow("")
     cv2.imshow("", img)
-    cv2.waitKey()
+    cv2.waitKey(0)
     cv2.destroyWindow("")
     return
 
