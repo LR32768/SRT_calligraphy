@@ -33,3 +33,4 @@ matwrite|number matrix|return a pictrue matrix
 matget|file address|read pictrue, and return a num matrix directly
 pos_black|number matrix|get all black pot, and return a list with all postion[x,y] of black point
 convexhull|picture or number matrix|return the turning point of the convex hull
+drawconvex|picture matrix,contours|draw convex into pictrue matrix
