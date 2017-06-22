@@ -6,7 +6,7 @@ Futhermore, we feed these patterns to CNN to get the best range (interval) of th
 
 ## Code Illustration
 
-general.py</br>
+###general.py</br>
 ---
 Argument Storation</br>
 incomplete
@@ -16,7 +16,7 @@ Name|Meaning
 two_threshold|Threshold for transforming a RGB picture into a black-white picture
 ---
 
-imgproc.py</br>
+###imgproc.py</br>
 ---
 Picture Basic Produce</br>
 complete
