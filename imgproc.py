@@ -111,6 +111,7 @@ def findcenter(mat, isimg=False):
 
 
 def findaxis(mat):
+
     l = pos_black(mat)
     matrix = np.zeros((len(l), 2))
     result = np.zeros((len(l), 1))
@@ -122,3 +123,22 @@ def findaxis(mat):
     pinv = np.linalg.pinv(matrix)
     line = np.dot(pinv, result)
     return line[0][0], line[1][0]
+
+
+def materode(mat):
+    element = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+    eroded = cv2.erode(mat, element)
+    return eroded
+
+
+def matdilate(mat):
+    element = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+    dilated = cv2.dilate(mat, element)
+    return dilated
+
+
+def matclear(mat):
+    element = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+    opened = cv2.morphologyEx(mat, cv2.MORPH_OPEN, element)
+    mat = matdilate(opened)
+    return mat

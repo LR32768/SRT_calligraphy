@@ -1,1 +1,1 @@
-two_threshold = 115
+two_threshold = 90
