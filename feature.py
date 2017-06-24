@@ -73,18 +73,22 @@ curdir = [convexlist[nstep][0] - convexlist[cur][0], convexlist[nstep][1] - conv
 cur = nstep
 
 while(cur != st):
-    convx.append(cur)
+    convx.append(convexlist[cur][0])
+    convy.append(convexlist[cur][1])
     curdot = 2
     nstep = 0
     for i in range(len(convexlist)):
-        if(i != st):
-            newdir = [convexlist[i][0] - convexlist[st][0], convexlist[i][1] - convexlist[st][1]]
+        if(i != cur):
+            newdir = [convexlist[i][0] - convexlist[cur][0], convexlist[i][1] - convexlist[cur][1]]
             newdot = dot(uni(curdir), uni(newdir))
             if (newdot > 0 and newdot < curdot):
                 nstep = i
                 curdot = newdot
     curdir = [convexlist[nstep][0] - convexlist[cur][0], convexlist[nstep][1] - convexlist[cur][1]]
     cur = nstep
+
+print(convx)
+print(convy)
 
 #To get the area of convex hull
 feature[0] = convex / area
