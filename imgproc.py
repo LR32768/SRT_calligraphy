@@ -80,3 +80,15 @@ def convexhull(img):
 
 def drawconvex(img, cnt):
     cv2.drawContours(img, cnt, -1, (0, 0, 0))
+
+
+def findcenter(mat, isimg=False):
+    result = [0, 0]
+    num = 0
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            if mat[i][j] == 1 or (isimg and mat[i][j] == 0):
+                result[0] += i
+                result[1] += j
+                num += 1
+    return [result[0] / num, result[1] / num]
