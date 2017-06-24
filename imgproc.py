@@ -73,7 +73,7 @@ def trans3(mat3):
     for k in range(len(mat3)):
         for i in range(len(mat3[k])):
             l.append([mat3[k][i][0][0], mat3[k][i][0][1]])
-    return np.matrix(l)
+    return l
 
 
 def convexhull(img):

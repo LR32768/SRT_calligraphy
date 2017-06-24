@@ -4,5 +4,6 @@ import cv2
 img = imgread('3.jpg')
 mat = matread(img)
 mat = matclear(mat)
-img = matwrite(mat)
-imgshow(img)
+l = convexhull(mat)
+l = trans3(l)
+print(l[0][0])

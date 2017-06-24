@@ -5,7 +5,7 @@ import cv2
 def cut(matl):
     length = 30
     mat = matl[0]
-    for i in range(len(mat) - length, len(mat)):
+    for i in range(len(mat) - length -10, len(mat)):
         for j in range(len(mat[0])):
             mat[i][j] = 0
     for i in range(0, length):
@@ -29,6 +29,7 @@ try:
             img = imgread(fold_source + '%d.jpg' % i)
             mat = matread(img)
             mat = matclear(mat)
+            mat = matdilate(mat)
             cut([mat])
             img = matwrite(mat)
             cv2.imwrite(fold_object + '%d.jpg' % i, img)
