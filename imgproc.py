@@ -68,14 +68,27 @@ def pos_black(mat):
     return result
 
 
+def trans3(mat3):
+    l = []
+    for i in range(len(mat3)):
+        l.append([mat3[i][0][0], mat3[i][0][1]])
+    return np.matrix(l)
+
+
 def convexhull(img):
     image, contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST,
                                                   cv2.CHAIN_APPROX_NONE)
     l = []
     for i in range(len(contours)):
         cnt = contours[i]
-        l.append(cv2.convexHull(cnt))
+        l.append(cv2.convexHull(cnt, None, True))
     return l
+
+
+def wholehull(img):
+    l = pos_black(matread(img))
+    l = np.matrix(l)
+    return cv2.convexHull(l, None, True)
 
 
 def drawconvex(img, cnt):
