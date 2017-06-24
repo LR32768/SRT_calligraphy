@@ -86,12 +86,90 @@ def convexhull(img):
     return l
 
 
-'''
 def wholehull(img):
-    l = pos_black(matread(img))
-    l = np.matrix(l)
-    return cv2.convexHull(l, None, True)
-'''
+    mat = matread(img)
+    feature = 10 * [0.0]
+
+    def xdot(v1, v2):
+        return v1[0] * v2[1] - v1[1] * v2[0]
+
+    def uni(v):
+        length = (v[0]**2 + v[1]**2)**0.5
+        nx = v[0] / length
+        ny = v[1] / length
+        return [nx, ny]
+
+    def dot(v1, v2):
+        return v1[0] * v2[0] + v1[1] * v2[1]
+
+    px = []
+    py = []
+    n = 0
+
+    l = convexhull(mat)
+    convexlist = trans3(l)
+
+    convx = []
+    convy = []
+
+    st = 0
+    for i in range(len(convexlist)):
+        if (convexlist[i][0] > convexlist[st][0] or
+            (convexlist[i][0] == convexlist[st][0] and
+             convexlist[i][1] > convexlist[st][1])):
+            st = i
+    convx.append(convexlist[st][0])
+    convy.append(convexlist[st][1])
+    # find the most right down point which must be one of the point of the convex hull
+
+    cur = st
+    curdir = [1, 0]
+    curdot = -1
+    nstep = 0
+
+    for i in range(len(convexlist)):
+        if (i != st):
+            newdir = [
+                convexlist[i][0] - convexlist[st][0],
+                convexlist[i][1] - convexlist[st][1]
+            ]
+            newxdot = xdot(uni(curdir), uni(newdir))
+            newdot = dot(uni(curdir), uni(newdir))
+            if (newxdot > 0 and newdot > curdot):
+                nstep = i
+                curdot = newdot
+    curdir = [
+        convexlist[nstep][0] - convexlist[cur][0],
+        convexlist[nstep][1] - convexlist[cur][1]
+    ]
+    cur = nstep
+
+    while (cur != st):
+        convx.append(convexlist[cur][0])
+        convy.append(convexlist[cur][1])
+        curdot = -1
+        nstep = 0
+        for i in range(len(convexlist)):
+            if (i != cur):
+                newdir = [
+                    convexlist[i][0] - convexlist[cur][0],
+                    convexlist[i][1] - convexlist[cur][1]
+                ]
+                newxdot = xdot(uni(curdir), uni(newdir))
+                newdot = dot(uni(curdir), uni(newdir))
+                if (newxdot > 0 and newdot > curdot):
+                    nstep = i
+                    curdot = newdot
+        curdir = [
+            convexlist[nstep][0] - convexlist[cur][0],
+            convexlist[nstep][1] - convexlist[cur][1]
+        ]
+        cur = nstep
+
+    result = []
+    for i in range(len(convx)):
+        result.append([convx[i], convy[i]])
+    return result
 
 
 def drawconvex(img, cnt):
@@ -121,7 +199,7 @@ def findaxis(mat):
     for i in range(len(l)):
         result[i][0] = l[i][1]
     pinv = np.linalg.pinv(matrix)
-    line = np.dot(pinv, result)
+    line = np.xdot(pinv, result)
     return line[0][0], line[1][0]
 
 
@@ -142,3 +220,17 @@ def matclear(mat):
     opened = cv2.morphologyEx(mat, cv2.MORPH_OPEN, element)
     mat = matdilate(opened)
     return mat
+
+
+def drawpoly(img, pointlist):
+    num = len(pointlist)
+
+    def list2tuple(p):
+        point = (p[0], p[1])
+        return point
+
+    for i in range(num):
+        img = cv2.line(img,
+                       list2tuple(pointlist[i]),
+                       list2tuple(pointlist[(i + 1) % num]), (0, 0, 0))
+    return img
