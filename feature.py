@@ -1,6 +1,6 @@
 import imgproc
 from imgproc import * 
-mat = matget("yong001.jpg")
+mat = matget("0.jpg")
 feature = 10*[0.0]
 
 def dot(v1, v2):
