@@ -8,6 +8,8 @@ Futhermore, we feed these patterns to CNN to get the best range (interval) of th
 
 * general.py
 * imgproc.py
+* carwler/catch.py
+* list_proc.py
 
 ---
 ### general.py</br>
@@ -37,3 +39,4 @@ convexhull|picture or number matrix|return the turning point of the convex hull
 drawconvex|picture matrix,contours|draw convex into pictrue matrix
 findcenter|matrix, isimg(bool)=False|when isimg is False,this function accept num matrix(0,1),yet it accept image matrix(0,255)
 findaxis|number matrix|return the axis of the black point calculated by linear regression
+matclear|number matrix|clear up the little point in a matrix 
