@@ -36,3 +36,4 @@ pos_black|number matrix|get all black pot, and return a list with all postion[x,
 convexhull|picture or number matrix|return the turning point of the convex hull
 drawconvex|picture matrix,contours|draw convex into pictrue matrix
 findcenter|matrix, isimg(bool)=False|when isimg is False,this function accept num matrix(0,1),yet it accept image matrix(0,255)
+findaxis|number matrix|return the axis of the black point calculated by linear regression

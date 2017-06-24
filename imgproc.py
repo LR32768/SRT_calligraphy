@@ -92,3 +92,17 @@ def findcenter(mat, isimg=False):
                 result[1] += j
                 num += 1
     return [result[0] / num, result[1] / num]
+
+
+def findaxis(mat):
+    l = pos_black(mat)
+    matrix = np.zeros((len(l), 2))
+    result = np.zeros((len(l), 1))
+    for i in range(len(l)):
+        matrix[i][0] = l[i][0]
+        matrix[i][1] = 1
+    for i in range(len(l)):
+        result[i][0] = l[i][1]
+    pinv = np.linalg.pinv(matrix)
+    line = np.dot(pinv, result)
+    return line[0][0], line[1][0]
