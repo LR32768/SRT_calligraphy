@@ -70,8 +70,9 @@ def pos_black(mat):
 
 def trans3(mat3):
     l = []
-    for i in range(len(mat3)):
-        l.append([mat3[i][0][0], mat3[i][0][1]])
+    for k in range(len(mat3)):
+        for i in range(len(mat3[k])):
+            l.append([mat3[k][i][0][0], mat3[k][i][0][1]])
     return np.matrix(l)
 
 
@@ -85,10 +86,12 @@ def convexhull(img):
     return l
 
 
+'''
 def wholehull(img):
     l = pos_black(matread(img))
     l = np.matrix(l)
     return cv2.convexHull(l, None, True)
+'''
 
 
 def drawconvex(img, cnt):
