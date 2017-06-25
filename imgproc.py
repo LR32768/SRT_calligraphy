@@ -199,7 +199,7 @@ def findaxis(mat):
     for i in range(len(l)):
         result[i][0] = l[i][1]
     pinv = np.linalg.pinv(matrix)
-    line = np.xdot(pinv, result)
+    line = np.dot(pinv, result)
     return line[0][0], line[1][0]
 
 
@@ -226,11 +226,24 @@ def drawpoly(img, pointlist):
     num = len(pointlist)
 
     def list2tuple(p):
-        point = (p[0], p[1])
+        point = (int(p[0]), int(p[1]))
         return point
 
     for i in range(num):
         img = cv2.line(img,
                        list2tuple(pointlist[i]),
                        list2tuple(pointlist[(i + 1) % num]), (0, 0, 0))
+    return img
+
+
+def drawline(img, a, b):
+    '''draw line in img by x = ay+b'''
+
+    def list2tuple(p):
+        point = (int(p[0]), int(p[1]))
+        return point
+
+    maxx = len(img[0])
+    img = cv2.line(img, (0, int(-b / a)), (int(maxx), int((maxx - b) / a)),
+                   (0, 0, 0))
     return img

@@ -16,7 +16,7 @@ def uni(v):
 
 px = []
 py = []
-n = 0
+n = 0p
 
 for i in range(mat.shape[0]):
     for j in range(mat.shape[1]):

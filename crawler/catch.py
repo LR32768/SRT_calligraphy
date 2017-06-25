@@ -30,6 +30,7 @@ def timelimited(timeout):
                 def _stop(self):
                     if self.isAlive():
                         print('Error')
+                        raise TimeoutException
 
             t = TimeLimited()
             t.start()

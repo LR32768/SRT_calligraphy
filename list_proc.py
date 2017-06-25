@@ -20,8 +20,8 @@ def cut(matl):
     return
 
 
-fold_source = 'crawler/'  # 'crawler/img/'
-fold_object = ''  # 'img/'
+fold_source = 'crawler/img/'  # 'crawler/img/'
+fold_object = 'img/'  # 'img/'
 try:
     i = 0
     while (True):
