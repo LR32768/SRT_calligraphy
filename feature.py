@@ -17,7 +17,6 @@ def uni(v):
     ny = v[1] / length
     return [nx, ny]
 
-
 px = []
 py = []
 n = 0
@@ -48,6 +47,7 @@ for i in range(n):
 
 height = xmax - xmin
 width = ymax - ymin
+blackpixels = len(px)
 
 print(height)
 print(width)
@@ -71,20 +71,40 @@ feature[0] = conarea / area
 
 
 # Now strech feature 2, 3;(Minimum deviation line slope)
-line = findaxis(img)
-print(line)
+a, b = findaxis(mat)
+print(a, b)
 
-feature[2] = line[0]
-feature[3] = line[1] / height
+feature[1] = a
+feature[2] = b / width
 
 #Now stretch feature 4; (Gravity center)
 Gravitycenter = findcenter(mat)
-feature[4] = Gravitycenter[0]
-feature[5] = Gravitycenter[1]
+feature[3] = (Gravitycenter[0]-xmin) / height
+feature[4] = (Gravitycenter[1]-ymin) / width
 
-#Now strtch feature 5; (White ratio)
-blackblocks = len(px)
-feature[5] = blackblocks / conarea
+#Now stretch feature 5; (White ratio)
+feature[5] = blackpixels / conarea
+
+#Now stretch feature 6; (Area of Left / Area of convex hull)
+
+#Now stretch feature 7; (quadrants distribution)
+quad = 4 * [0]
+
+for i in range(blackpixels):
+    if px[i] > Gravitycenter[0]:
+        if py[i] > Gravitycenter[1]:
+            quad[3] += 1
+        else:
+            quad[2] += 1
+    else:
+        if py[i] > Gravitycenter[1]:
+            quad[0] += 1
+        else:
+            quad[1] += 1
+
+for i in range(4):
+    feature[7 + i] = quad[i] / blackpixels
+
 
 print(feature)
 
