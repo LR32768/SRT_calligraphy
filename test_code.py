@@ -2,7 +2,7 @@ from imgproc import *
 import cv2
 import numpy as np
 
-img = imgread('img/4.jpg')
+img = imgread('img/2.jpg')
 mat = matread(img)
 
 l = wholehull(img)
