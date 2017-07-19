@@ -3,6 +3,15 @@ import cv2
 from general import two_threshold
 
 
+def line_to_X_y(line):
+    X = []
+    y = []
+    for i in range(len(line)):
+        X.append(line[i][0])
+        y.append(line[i][1])
+    return X, y
+
+
 def imgread(addr):
     try:
         img = cv2.imread(addr)  # read image into a mat
@@ -247,3 +256,78 @@ def drawline(img, a, b):
     img = cv2.line(img, (0, int(-b / a)), (int(maxx), int((maxx - b) / a)),
                    (0, 0, 0))
     return img
+
+
+def line_cut_convex(X, y, axisa, axisb):
+    def get_point_line():
+        change_points = []
+
+        def value_cal(i):
+            value = y[i] - (X[i] * axisa + axisb)
+            return value
+
+        if len(X) != len(y):
+            raise Exception('length of X and y error')
+        for i in range(1, len(X) + 1):
+            value = value_cal(i - 1)
+            value_next = value_cal(i % len(X))
+            if value_next * value < 0 or value_next**2 + value**2 == 0:
+                change_points.append(i - 1)
+                change_points.append(i)
+        if len(change_points) != 4:
+            raise Exception('error in number of the change_points')
+        return change_points
+
+    def line_cross(A, B, a, b):
+        '''line_cross(A, B, a, b)->[cross_x, cross_y] - x = ay+b cross A-B '''
+        result = [[0], [0]]
+        num1 = B[1] - A[1]
+        num2 = B[0] - A[0]
+        nump1 = [[a, -1], [num1, -num2]]
+        nump2 = [[-b], [num1 * A[0] - num2 * A[1]]]
+        result = np.dot(np.linalg.inv(nump1), nump2)
+        return [result[0][0], result[1][0]]
+
+    def index_to_point(i):
+        result = [X[i], y[i]]
+        return result
+
+    def get_line():
+        result = []
+        for i in range(len(X)):
+            result.append([X[i], y[i]])
+        return result
+
+    def area_cal(l):
+        conarea = 0.0
+        for i in range(len(l) - 1):
+            conarea = conarea + l[i][0] * l[(
+                i + 1) % len(l)][1] - l[i][1] * l[(i + 1) % len(l)][0]
+        conarea = conarea / 2.0
+        return conarea
+
+    change_points = get_point_line()
+    num1, num2, num3, num4 = change_points[:]
+    cross_point1 = line_cross(
+        index_to_point(num1), index_to_point(num2), axisa, axisb)
+    cross_point2 = line_cross(
+        index_to_point(num3), index_to_point(num4), axisa, axisb)
+    line1 = [cross_point1]
+    line2 = [cross_point2]
+    convex = get_line()
+    line1 += convex[num2:num3 + 1]
+    line1.append(cross_point2)
+
+    line2 += convex[num4:num1:-1]
+    line2.append(cross_point1)
+
+    area = area_cal(line1)
+    area_whole = area_cal(get_line())
+
+    print(change_points)
+    return area / area_whole, [
+        index_to_point(num1),
+        index_to_point(num2),
+        index_to_point(num3),
+        index_to_point(num4)
+    ]
