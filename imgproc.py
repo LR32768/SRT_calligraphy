@@ -263,7 +263,7 @@ def line_cut_convex(X, y, axisa, axisb):
         change_points = []
 
         def value_cal(i):
-            value = y[i] - (X[i] * axisa + axisb)
+            value = X[i] - (y[i] * axisa + axisb)
             return value
 
         if len(X) != len(y):
@@ -283,7 +283,7 @@ def line_cut_convex(X, y, axisa, axisb):
         result = [[0], [0]]
         num1 = B[1] - A[1]
         num2 = B[0] - A[0]
-        nump1 = [[a, -1], [num1, -num2]]
+        nump1 = [[-1, a], [num1, -num2]]
         nump2 = [[-b], [num1 * A[0] - num2 * A[1]]]
         result = np.dot(np.linalg.inv(nump1), nump2)
         return [result[0][0], result[1][0]]
@@ -300,9 +300,9 @@ def line_cut_convex(X, y, axisa, axisb):
 
     def area_cal(l):
         conarea = 0.0
+        l.append(l[0])
         for i in range(len(l) - 1):
-            conarea = conarea + l[i][0] * l[(
-                i + 1) % len(l)][1] - l[i][1] * l[(i + 1) % len(l)][0]
+            conarea = conarea + l[i][0] * l[i + 1][1] - l[i][1] * l[i + 1][0]
         conarea = conarea / 2.0
         return conarea
 
@@ -323,11 +323,4 @@ def line_cut_convex(X, y, axisa, axisb):
 
     area = area_cal(line1)
     area_whole = area_cal(get_line())
-
-    print(change_points)
-    return area / area_whole, [
-        index_to_point(num1),
-        index_to_point(num2),
-        index_to_point(num3),
-        index_to_point(num4)
-    ]
+    return area / area_whole
