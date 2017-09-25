@@ -1,6 +1,9 @@
 import numpy as np
 import cv2
 from general import two_threshold
+import math
+import random
+import matplotlib.pyplot as plt
 
 
 def line_to_X_y(line):
@@ -37,7 +40,6 @@ def imgshow(img):
 
 
 def matread(img):
-    mat = np.zeros(img.shape)
     mat = img.copy()
     for i in range(mat.shape[0]):
         for j in range(mat.shape[1]):
@@ -73,6 +75,16 @@ def pos_black(mat):
     for i in range(size[0]):
         for j in range(size[1]):
             if mat[i][j] == 1:
+                result.append([i, j])
+    return result
+
+
+def pos_white(mat):
+    size = mat.shape
+    result = []
+    for i in range(size[0]):
+        for j in range(size[1]):
+            if mat[i][j] == 0:
                 result.append([i, j])
     return result
 
@@ -123,9 +135,9 @@ def wholehull(img):
 
     st = 0
     for i in range(len(convexlist)):
-        if (convexlist[i][0] > convexlist[st][0] or
-            (convexlist[i][0] == convexlist[st][0] and
-             convexlist[i][1] > convexlist[st][1])):
+        if (convexlist[i][0] > convexlist[st][0]
+                or (convexlist[i][0] == convexlist[st][0]
+                    and convexlist[i][1] > convexlist[st][1])):
             st = i
     convx.append(convexlist[st][0])
     convy.append(convexlist[st][1])
@@ -241,7 +253,7 @@ def drawpoly(img, pointlist):
     for i in range(num):
         img = cv2.line(img,
                        list2tuple(pointlist[i]),
-                       list2tuple(pointlist[(i + 1) % num]), (0, 0, 0))
+                       list2tuple(pointlist[(i + 1) % num]), (50, 0, 0))
     return img
 
 
@@ -324,3 +336,130 @@ def line_cut_convex(X, y, axisa, axisb):
     area = area_cal(line1)
     area_whole = area_cal(get_line())
     return area / area_whole
+
+
+def white_within_convex(img):
+    wwc_list = []
+    l = wholehull(img)
+    polyimg = drawpoly(img, l)
+    imgshape = polyimg.shape
+
+    for i in range(0, imgshape[0]):
+        f = False
+        st = 0
+
+        while not (f and polyimg[i][st] == 255) and st < imgshape[1]:
+            if polyimg[i][st] != 0 and polyimg[i][st] != 255:
+                f = True
+            st += 1
+            if st >= len(polyimg[0]):
+                break
+        f = False
+        ed = imgshape[1] - 1
+        while not (f and polyimg[i][ed] == 255) and ed >= 0:
+            if polyimg[i][ed] != 0 and polyimg[i][ed] != 255:
+                f = True
+            ed -= 1
+        #print(st,' ',ed)
+        if ed > st:
+            for j in range(st, ed):
+                if polyimg[i][j] == 255:
+                    wwc_list.append([i, j])
+
+    return wwc_list
+
+
+def isInChar(pos_x, pos_y, mat):
+    size1 = mat.shape[0]
+    for i in range(len(mat) - 1):
+        x1 = pos_x - mat[i][0]
+        y1 = pos_y - mat[i][1]
+        x2 = pos_x - mat[(i + 1) % size1][0]
+        y2 = pos_y - mat[(i + 1) % size1][1]
+        if x1 * y2 - x2 * y1 < 1e-2:
+            return False
+    return True
+
+
+def orientation_white_block_length(point, mat, orientation):
+    """
+    给定一个点和一个数字矩阵和一个方向(非垂直方向),计算在这个方向上的白块长度
+    """
+
+    def legal(pos_x, pos_y):
+        if (pos_x < 0 or pos_y < 0 or pos_x >= mat.shape[0]
+                or pos_y >= mat.shape[1]):
+            return False
+        #elif not isInChar(pos_x, pos_y, mat):
+        #return False
+        else:
+            return True
+
+    #if orientation % 90 == 0 and orientation != 0:
+    #return None
+    path_width = 10
+    if orientation % 90 != 0 or orientation % 180 == 0:
+        path_height = path_width * math.tan(orientation)
+    else:
+        path_width = 0
+        path_height = 10
+    n = 0
+    left = right = True
+    while left or right:
+        if left:
+            n += 1
+            pos_x = (int)(point[0] - path_width * n)
+            pos_y = (int)(point[0] - path_height * n)
+
+            if not legal(pos_x, pos_y):
+                left = False
+            else:
+                next_point = mat[pos_x][pos_y]
+                if next_point != 0:
+                    left = False
+        if right:
+            n += 1
+            pos_x = (int)(point[0] + path_width * n)
+            pos_y = (int)(point[0] + path_height * n)
+
+            if not legal(pos_x, pos_y):
+                right = False
+            else:
+                next_point = mat[pos_x][pos_y]
+                if next_point != 0:
+                    right = False
+    return n * math.sqrt(path_width**2 + path_height**2)
+
+
+def white_block_length(point, mat):
+    orientations = (0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 175)
+    min_length = mat.shape[0]
+    for orientation in orientations:
+        length = orientation_white_block_length(point, mat, orientation)
+        if length < min_length:
+            min_length = length
+    return min_length
+
+
+def white_distribute(img):
+    mat = matread(img)
+    point_white = white_within_convex(img)
+    time = 20
+    result = []
+    for i in range(0, time):
+        pos = random.randint(0, len(point_white) - 1)
+
+        #plt.imshow(mat)
+        #plt.plot(point_white[pos][0], point_white[pos][1], 'X')
+        #plt.show()
+        #print(isInChar(point_white[pos][0], point_white[pos][1], mat))
+
+        #if isInChar(point_white[pos][0], point_white[pos][1], mat):
+        #break
+        result.append(white_block_length(point_white[pos], mat))
+    #print(result)
+    avg = 0
+    for i in range(len(result)):
+        avg += result[i]
+    avg /= len(result)
+    return np.std(result)
